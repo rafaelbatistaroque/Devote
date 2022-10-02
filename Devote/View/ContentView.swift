@@ -9,7 +9,7 @@ struct ContentView: View {
 		task.isEmpty
 	}
 
-//MARK: - functions
+	//MARK: - functions
 	func hideKeyboard() {
 		isFocused = false
 	}
@@ -58,49 +58,53 @@ struct ContentView: View {
 	}
 
 	var body: some View {
-		NavigationView {
-			VStack {
-				VStack(spacing: 16) {
-					TextField("New Task", text: $task)
-						.focused($isFocused)
+		NavigationStack {
+			ZStack {
+				VStack {
+					VStack(spacing: 16) {
+						TextField("New Task", text: $task)
+							.focused($isFocused)
+							.padding()
+							.background(Color(UIColor.systemGray6))
+							.cornerRadius(10)
+
+						Button(action: {
+							addItem()
+							clearTaskField()
+							hideKeyboard()
+						}, label: {
+							Spacer()
+							Text("Save")
+							Spacer()
+						})
+						.disabled(isButtonDisable)
 						.padding()
-						.background(Color(UIColor.systemGray6))
+						.font(.headline)
+						.foregroundColor(.white)
+						.background(isButtonDisable ? .gray : .pink)
 						.cornerRadius(10)
-
-					Button(action: {
-						addItem()
-						clearTaskField()
-						hideKeyboard()
-					}, label: {
-						Spacer()
-						Text("Save")
-						Spacer()
-					})
-					.disabled(isButtonDisable)
-					.padding()
-					.font(.headline)
-					.foregroundColor(.white)
-					.background(isButtonDisable ? .gray : .pink)
-					.cornerRadius(10)
-				}
-				.padding()
-
-				List {
-					ForEach(items) { item in
-						VStack(alignment: .leading, spacing: 2) {
-							Text(item.task ?? "")
-								.font(.headline)
-								.fontWeight(.bold)
-
-							Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-								.font(.footnote)
-								.foregroundColor(.gray)
-						}
 					}
-					.onDelete(perform: deleteItems)
-				}
-				.onTapGesture {
-					hideKeyboard()
+					.padding()
+
+					List {
+						ForEach(items) { item in
+							VStack(alignment: .leading, spacing: 2) {
+								Text(item.task ?? "")
+									.font(.headline)
+									.fontWeight(.bold)
+
+								Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+									.font(.footnote)
+									.foregroundColor(.gray)
+							}
+						}
+						.onDelete(perform: deleteItems)
+					}
+					.listStyle(InsetGroupedListStyle())
+					.scrollContentBackground(.hidden)
+					.shadow(color: Color(red: 0, green: 0, blue: 0, opacity: 0.3), radius: 12)
+					.padding(.vertical, 0)
+					.frame(maxWidth: 640)
 				}
 			}
 			.navigationBarTitle("Daily Tasks")
@@ -110,7 +114,8 @@ struct ContentView: View {
 					EditButton()
 				}
 			}
-			Text("Select an item")
+			.background(BackgoundImageView())
+			.background(backgroundGradient.ignoresSafeArea(.all))
 		}
 	}
 }

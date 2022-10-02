@@ -1,4 +1,4 @@
-import Foundation
+import SwiftUI
 
 //MARK: - formatter
 let itemFormatter: DateFormatter = {
@@ -9,5 +9,8 @@ let itemFormatter: DateFormatter = {
 }()
 
 //MARK: UI
+var backgroundGradient: LinearGradient {
+	LinearGradient(colors: [.pink, .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
+}
 
 //MARK: UX
