@@ -3,8 +3,22 @@ import CoreData
 
 struct ContentView: View {
 	//MARK: property
+	@State var task: String = ""
+	@FocusState private var isFocused: Bool
+	private var isButtonDisable: Bool {
+		task.isEmpty
+	}
 
-	//MARK: fetching data
+//MARK: - functions
+	func hideKeyboard() {
+		isFocused = false
+	}
+
+	func clearTaskField() {
+		task = ""
+	}
+
+	//MARK: - fetching data
 	@Environment(\.managedObjectContext) private var viewContext
 	
 	@FetchRequest(
@@ -12,11 +26,14 @@ struct ContentView: View {
 		animation: .default)
 	private var items: FetchedResults<Item>
 
-	//MARK: function
+	//MARK: - function
 	private func addItem() {
 		withAnimation {
 			let newItem = Item(context: viewContext)
 			newItem.timestamp = Date()
+			newItem.task = task
+			newItem.completion = false
+			newItem.id = UUID()
 
 			do {
 				try viewContext.save()
@@ -42,24 +59,55 @@ struct ContentView: View {
 
 	var body: some View {
 		NavigationView {
-			List {
-				ForEach(items) { item in
-					NavigationLink {
-						Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-					} label: {
-						Text(item.timestamp!, formatter: itemFormatter)
-					}
+			VStack {
+				VStack(spacing: 16) {
+					TextField("New Task", text: $task)
+						.focused($isFocused)
+						.padding()
+						.background(Color(UIColor.systemGray6))
+						.cornerRadius(10)
+
+					Button(action: {
+						addItem()
+						clearTaskField()
+						hideKeyboard()
+					}, label: {
+						Spacer()
+						Text("Save")
+						Spacer()
+					})
+					.disabled(isButtonDisable)
+					.padding()
+					.font(.headline)
+					.foregroundColor(.white)
+					.background(isButtonDisable ? .gray : .pink)
+					.cornerRadius(10)
 				}
-				.onDelete(perform: deleteItems)
+				.padding()
+
+				List {
+					ForEach(items) { item in
+						VStack(alignment: .leading, spacing: 2) {
+							Text(item.task ?? "")
+								.font(.headline)
+								.fontWeight(.bold)
+
+							Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+								.font(.footnote)
+								.foregroundColor(.gray)
+						}
+					}
+					.onDelete(perform: deleteItems)
+				}
+				.onTapGesture {
+					hideKeyboard()
+				}
 			}
+			.navigationBarTitle("Daily Tasks")
+			.navigationBarTitleDisplayMode(.large)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
 					EditButton()
-				}
-				ToolbarItem {
-					Button(action: addItem) {
-						Label("Add Item", systemImage: "plus")
-					}
 				}
 			}
 			Text("Select an item")
@@ -67,7 +115,7 @@ struct ContentView: View {
 	}
 }
 
-//MARK: preview
+//MARK: - preview
 struct ContentView_Previews: PreviewProvider {
 	static var previews: some View {
 		ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)

@@ -30,7 +30,7 @@
 		5316AF8428E50E8400C0A45E /* sound-rise.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sound-rise.mp3"; sourceTree = "<group>"; };
 		5316AF8528E50E8400C0A45E /* sound-tap.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sound-tap.mp3"; sourceTree = "<group>"; };
 		5316AF8628E50E8400C0A45E /* sound-ding.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "sound-ding.mp3"; sourceTree = "<group>"; };
-		5316AF8F28E50EFD00C0A45E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5316AF8F28E50EFD00C0A45E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		53C22EF728E69B56008F9D86 /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -64,14 +64,14 @@
 		5316AF7028E50AEC00C0A45E /* Devote */ = {
 			isa = PBXGroup;
 			children = (
+				5316AF7128E50AEC00C0A45E /* DevoteApp.swift */,
 				53C22EF628E697FD008F9D86 /* View */,
-				5316AF8F28E50EFD00C0A45E /* Info.plist */,
 				5316AF8E28E50EBB00C0A45E /* Model */,
 				5316AF8D28E50EAD00C0A45E /* Styles */,
 				5316AF8C28E50EA600C0A45E /* Utils */,
 				5316AF8B28E50EA000C0A45E /* Extensions */,
 				5316AF8A28E50E9000C0A45E /* Sounds */,
-				5316AF7128E50AEC00C0A45E /* DevoteApp.swift */,
+				5316AF8F28E50EFD00C0A45E /* Info.plist */,
 				5316AF7528E50AED00C0A45E /* Assets.xcassets */,
 				5316AF7728E50AED00C0A45E /* Preview Content */,
 			);
