@@ -2,21 +2,8 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-	//MARK: property
-	@State var task: String = ""
-	@FocusState private var isFocused: Bool
-	private var isButtonDisable: Bool {
-		task.isEmpty
-	}
-
-	//MARK: - functions
-	func hideKeyboard() {
-		isFocused = false
-	}
-
-	func clearTaskField() {
-		task = ""
-	}
+	//MARK: - Properties
+	@State private var showNewTaskItem: Bool = false
 
 	//MARK: - fetching data
 	@Environment(\.managedObjectContext) private var viewContext
@@ -27,23 +14,6 @@ struct ContentView: View {
 	private var items: FetchedResults<Item>
 
 	//MARK: - function
-	private func addItem() {
-		withAnimation {
-			let newItem = Item(context: viewContext)
-			newItem.timestamp = Date()
-			newItem.task = task
-			newItem.completion = false
-			newItem.id = UUID()
-
-			do {
-				try viewContext.save()
-			} catch {
-				let nsError = error as NSError
-				fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-			}
-		}
-	}
-
 	private func deleteItems(offsets: IndexSet) {
 		withAnimation {
 			offsets.map { items[$0] }.forEach(viewContext.delete)
@@ -60,31 +30,27 @@ struct ContentView: View {
 	var body: some View {
 		NavigationStack {
 			ZStack {
-				VStack {
-					VStack(spacing: 16) {
-						TextField("New Task", text: $task)
-							.focused($isFocused)
-							.padding()
-							.background(Color(UIColor.systemGray6))
-							.cornerRadius(10)
 
-						Button(action: {
-							addItem()
-							clearTaskField()
-							hideKeyboard()
-						}, label: {
-							Spacer()
-							Text("Save")
-							Spacer()
-						})
-						.disabled(isButtonDisable)
-						.padding()
-						.font(.headline)
-						.foregroundColor(.white)
-						.background(isButtonDisable ? .gray : .pink)
-						.cornerRadius(10)
-					}
-					.padding()
+				VStack {
+					Spacer(minLength: 80)
+
+					Button(action: {
+						showNewTaskItem = true
+					}, label: {
+						Image(systemName: "plus.circle")
+							.font(.system(size: 30, weight: .semibold, design: .rounded))
+
+						Text("New Task")
+							.font(.system(size: 24, weight: .bold, design: .rounded))
+					})
+					.foregroundColor(.white)
+					.padding(.horizontal, 20)
+					.padding(.vertical, 15)
+					.background(
+						LinearGradient(colors: [Color.pink, Color.blue], startPoint: .leading, endPoint: .trailing)
+							.clipShape(Capsule())
+					)
+					.shadow(color: Color(red: 0, green: 0, blue: 0, opacity: 0.25), radius: 9, x: 0, y: 4.0)
 
 					List {
 						ForEach(items) { item in
@@ -105,6 +71,16 @@ struct ContentView: View {
 					.shadow(color: Color(red: 0, green: 0, blue: 0, opacity: 0.3), radius: 12)
 					.padding(.vertical, 0)
 					.frame(maxWidth: 640)
+				}
+
+				if showNewTaskItem {
+					BlankView()
+						.onTapGesture {
+							withAnimation() {
+								showNewTaskItem = false
+							}
+						}
+					NewTaskItemView(isShowing: $showNewTaskItem)
 				}
 			}
 			.navigationBarTitle("Daily Tasks")
